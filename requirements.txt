@@ -1,0 +1,25 @@
+# ================================================
+# FILE: requirements.txt
+# ================================================
+# Core Data Science and Machine Learning Libraries
+pandas
+numpy
+scikit-learn
+lightgbm
+
+# Hyperparameter Optimization
+optuna
+
+# Experiment Tracking and MLOps
+mlflow
+
+# Data Visualization (for EDA notebooks)
+matplotlib
+seaborn
+
+# Notebook Environment
+jupyter
+
+lightkurve
+
+tensorflow

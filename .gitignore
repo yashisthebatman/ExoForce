@@ -1,1 +1,7 @@
 data/
+venv/
+data_raw/
+pycache/
+src/mlruns/
+data_cnn_tier1/
+mlruns/
