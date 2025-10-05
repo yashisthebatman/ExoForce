@@ -6,161 +6,32 @@
     <title>3D Multi-Planet Simulator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        canvas {
-            display: block;
-        }
-        #tooltip {
-            position: absolute;
-            display: none;
-            background: rgba(0, 0, 0, 0.75);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        #planet-detail-panel {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 320px;
-            background: rgba(10, 20, 40, 0.8);
-            border: 1px solid rgba(0, 191, 255, 0.5);
-            border-radius: 8px;
-            color: #e0e0e0;
-            display: none;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        #planet-detail-header {
-            padding: 10px 15px;
-            background: rgba(0, 191, 255, 0.1);
-            border-bottom: 1px solid rgba(0, 191, 255, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #planet-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-            color: #fff;
-        }
-        #close-panel-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-            line-height: 1;
-        }
-        #planet-viewer {
-            width: 100%;
-            height: 200px;
-            background-color: #000;
-        }
-        #planet-info {
-            padding: 15px;
-            font-size: 14px;
-        }
-        #planet-info ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        #planet-info li {
-            margin-bottom: 8px;
-        }
-        #planet-info .label {
-            color: #00bfff;
-            display: inline-block;
-            width: 120px;
-        }
-        #system-list-toggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(10, 20, 40, 0.8);
-            border: 1px solid rgba(0, 191, 255, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            color: #fff;
-            z-index: 100;
-        }
-        #reset-view-toggle {
-            position: absolute;
-            top: 20px;
-            left: 70px;
-            width: 40px;
-            height: 40px;
-            background: rgba(10, 20, 40, 0.8);
-            border: 1px solid rgba(0, 191, 255, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            color: #fff;
-            z-index: 100;
-        }
-        #system-list-panel {
-            position: absolute;
-            top: 70px;
-            left: 20px;
-            width: 280px;
-            max-height: 400px;
-            background: rgba(10, 20, 40, 0.8);
-            border: 1px solid rgba(0, 191, 255, 0.5);
-            border-radius: 8px;
-            color: #e0e0e0;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            overflow: hidden;
-            display: none;
-        }
-        #system-list-header {
-            padding: 10px 15px;
-            background: rgba(0, 191, 255, 0.1);
-            border-bottom: 1px solid rgba(0, 191, 255, 0.5);
-        }
-        #system-list-header h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-        #system-list-body {
-            max-height: 340px;
-            overflow-y: auto;
-        }
-        #planet-list-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #planet-list-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(0, 191, 255, 0.1);
-            cursor: pointer;
-        }
-        #planet-list-table tr:hover td {
-            background: rgba(0, 191, 255, 0.2);
-        }
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        canvas { display: block; }
+        #tooltip { position: absolute; display: none; background: rgba(0, 0, 0, 0.75); color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; pointer-events: none; border: 1px solid rgba(255, 255, 255, 0.2); }
+        #planet-detail-panel { position: absolute; top: 20px; right: 20px; width: 320px; background: rgba(10, 20, 40, 0.8); border: 1px solid rgba(0, 191, 255, 0.5); border-radius: 8px; color: #e0e0e0; display: none; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 101; }
+        #planet-detail-header { padding: 10px 15px; background: rgba(0, 191, 255, 0.1); border-bottom: 1px solid rgba(0, 191, 255, 0.5); display: flex; justify-content: space-between; align-items: center; }
+        #planet-name { font-size: 20px; font-weight: bold; margin: 0; color: #fff; }
+        #close-panel-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1; }
+        #planet-viewer { width: 100%; height: 200px; background-color: #000; }
+        #planet-info { padding: 15px; font-size: 14px; }
+        #planet-info ul { list-style: none; padding: 0; margin: 0; }
+        #planet-info li { margin-bottom: 8px; }
+        #planet-info .label { color: #00bfff; display: inline-block; width: 120px; }
+        #system-list-toggle { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: rgba(10, 20, 40, 0.8); border: 1px solid rgba(0, 191, 255, 0.5); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: #fff; z-index: 100; }
+        #reset-view-toggle { position: absolute; top: 20px; left: 70px; width: 40px; height: 40px; background: rgba(10, 20, 40, 0.8); border: 1px solid rgba(0, 191, 255, 0.5); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: #fff; z-index: 100; }
+        #system-list-panel { position: absolute; top: 70px; left: 20px; width: 280px; max-height: 400px; background: rgba(10, 20, 40, 0.8); border: 1px solid rgba(0, 191, 255, 0.5); border-radius: 8px; color: #e0e0e0; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); overflow: hidden; display: none; z-index: 101; }
+        #system-list-header { padding: 10px 15px; background: rgba(0, 191, 255, 0.1); border-bottom: 1px solid rgba(0, 191, 255, 0.5); }
+        #system-list-header h3 { margin: 0; font-size: 18px; }
+        #system-list-body { max-height: 340px; overflow-y: auto; }
+        #planet-list-table { width: 100%; border-collapse: collapse; }
+        #planet-list-table td { padding: 12px 15px; border-bottom: 1px solid rgba(0, 191, 255, 0.1); cursor: pointer; }
+        #planet-list-table tr:hover td { background: rgba(0, 191, 255, 0.2); }
     </style>
 </head>
 <body>
     <canvas id="simulation-canvas"></canvas>
     <div id="tooltip"></div>
-
     <div id="planet-detail-panel">
         <div id="planet-detail-header">
             <h2 id="planet-name">Planet Name</h2>
@@ -176,15 +47,12 @@
             </ul>
         </div>
     </div>
-
     <div id="system-list-toggle">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
     </div>
-
     <div id="reset-view-toggle" title="Back to System View">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
     </div>
-
     <div id="system-list-panel">
         <div id="system-list-header">
             <h3>System Planets</h3>
@@ -196,7 +64,6 @@
             </table>
         </div>
     </div>
-
     <script>
         // --- Core 3D Components ---
         let scene, camera, renderer, starField, star;
@@ -230,16 +97,10 @@
 
         function getPlanetMaterial(planetData) {
             const temp = planetData.koi_teq;
-            let texture;
-
-            if (temp > 1000) texture = textureCache.hot;
-            else if (temp > 373) texture = textureCache.warm;
-            else if (temp > 250) texture = textureCache.temperate;
-            else texture = textureCache.cold;
-            
-            return new THREE.MeshStandardMaterial({
-                map: texture, roughness: 0.9, metalness: 0.1
-            });
+            if (temp > 1000) return new THREE.MeshStandardMaterial({ map: textureCache.hot, roughness: 0.9, metalness: 0.1 });
+            if (temp > 373) return new THREE.MeshStandardMaterial({ map: textureCache.warm, roughness: 0.9, metalness: 0.1 });
+            if (temp > 250) return new THREE.MeshStandardMaterial({ map: textureCache.temperate, roughness: 0.9, metalness: 0.1 });
+            return new THREE.MeshStandardMaterial({ map: textureCache.cold, roughness: 0.9, metalness: 0.1 });
         }
 
         function init() {
@@ -252,13 +113,11 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-            scene.add(ambientLight);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
             const starfieldGeometry = new THREE.SphereGeometry(4000, 64, 64);
             const starfieldTexture = textureLoader.load('https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/galaxy_starfield.png');
-            const starfieldMaterial = new THREE.MeshBasicMaterial({ map: starfieldTexture, side: THREE.BackSide });
-            starField = new THREE.Mesh(starfieldGeometry, starfieldMaterial);
+            starField = new THREE.Mesh(starfieldGeometry, new THREE.MeshBasicMaterial({ map: starfieldTexture, side: THREE.BackSide }));
             scene.add(starField);
             
             initDetailPanel();
@@ -273,14 +132,10 @@
 
             systemListPanel = document.getElementById('system-list-panel');
             systemListToggle = document.getElementById('system-list-toggle');
-            systemListToggle.addEventListener('click', () => {
-                const isVisible = systemListPanel.style.display === 'block';
-                systemListPanel.style.display = isVisible ? 'none' : 'block';
-            });
+            systemListToggle.addEventListener('click', () => { systemListPanel.style.display = systemListPanel.style.display === 'block' ? 'none' : 'block'; });
             
             initialCameraPosition.copy(camera.position);
-            const resetViewToggle = document.getElementById('reset-view-toggle');
-            resetViewToggle.addEventListener('click', resetCameraView);
+            document.getElementById('reset-view-toggle').addEventListener('click', resetCameraView);
         }
 
         function initDetailPanel() {
@@ -290,7 +145,6 @@
             detailCamera.position.z = 3;
             detailRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             detailRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(5, 3, 5);
             detailScene.add(light);
@@ -298,15 +152,12 @@
         }
 
         function populateSolarSystem(exoplanetData) {
-            planetObjects.forEach(p => scene.remove(p.planetMesh));
+            planetObjects.forEach(p => p.planetMesh.parent.remove(p.planetMesh));
             planetObjects.length = 0;
             const existingSystem = scene.getObjectByName("solarSystem");
             if (existingSystem) scene.remove(existingSystem);
 
-            if (!exoplanetData || exoplanetData.length === 0) {
-                console.warn("No exoplanet data provided to visualize.");
-                return;
-            }
+            if (!exoplanetData || exoplanetData.length === 0) return;
             
             textureCache.star = textureLoader.load('textures/star/star.jpg');
             textureCache.hot = textureLoader.load('textures/planet/HD_189733_b.jpeg');
@@ -318,12 +169,9 @@
             systemGroup.name = "solarSystem";
             const starData = exoplanetData[0];
             
-            const starRadius = (Math.log10(parseFloat(starData.koi_srad) || 1.0) * 35 + 12) * 8;
-            const starGeometry = new THREE.SphereGeometry(starRadius, 64, 64);
-            const starMaterial = new THREE.MeshBasicMaterial({ map: textureCache.star });
-            star = new THREE.Mesh(starGeometry, starMaterial);
-            const pointLight = new THREE.PointLight(0xffffff, 2.5, 10000);
-            star.add(pointLight);
+            const starRadius = (Math.log10(parseFloat(starData.koi_srad) || 1.0) * 35 + 12) * 4;
+            star = new THREE.Mesh(new THREE.SphereGeometry(starRadius, 64, 64), new THREE.MeshBasicMaterial({ map: textureCache.star }));
+            star.add(new THREE.PointLight(0xffffff, 2.5, 10000));
             systemGroup.add(star);
             
             const planetListTableBody = document.querySelector("#planet-list-table tbody");
@@ -332,24 +180,14 @@
             exoplanetData.forEach((planetData, index) => {
                 if(index === 0) return; 
                 
-                const planetRadius = (Math.log10(parseFloat(planetData.koi_prad) || 1.0) * 3 + 1) * 8;
+                const planetRadius = (Math.log10(parseFloat(planetData.koi_prad) || 1.0) * 3 + 1) * 6;
                 const orbitalPeriod = parseFloat(planetData.koi_period);
-                const orbitRadius = (starRadius + 80 + Math.log2(orbitalPeriod) * 80) * 1.5;
+                const orbitRadius = (starRadius + 60 + Math.log2(orbitalPeriod) * 40) * 1.5;
                 
-                const planetGeometry = new THREE.SphereGeometry(planetRadius, 32, 32);
-                const planetMaterial = getPlanetMaterial(planetData);
-                const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+                const planetMesh = new THREE.Mesh(new THREE.SphereGeometry(planetRadius, 32, 32), getPlanetMaterial(planetData));
                 planetMesh.position.x = orbitRadius;
 
-                const glowTexture = textureLoader.load('https://raw.githubusercontent.com/stemkoski/stemkoski.github.com/master/Three.js/images/glow.png');
-                const atmosphereMaterial = new THREE.SpriteMaterial({ map: glowTexture, color: 0x87ceeb, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-                const atmosphereGlow = new THREE.Sprite(atmosphereMaterial);
-                atmosphereGlow.scale.set(planetRadius * 2.5, planetRadius * 2.5, 1.0);
-                planetMesh.add(atmosphereGlow);
-
-                const orbitPathGeometry = new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, orbitRadius, 0, Math.PI * 2, false).getSpacedPoints(128));
-                const orbitPathMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
-                const orbitPath = new THREE.Line(orbitPathGeometry, orbitPathMaterial);
+                const orbitPath = new THREE.Line(new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, orbitRadius, 0, Math.PI * 2, false).getSpacedPoints(128)), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 }));
                 orbitPath.rotation.x = Math.PI / 2;
                 systemGroup.add(orbitPath);
 
@@ -365,30 +203,19 @@
                     systemListPanel.style.display = 'none';
                 });
             });
-            
             scene.add(systemGroup);
         }
 
         function focusOnPlanet(targetMesh) {
             isAnimatingCamera = true;
             focusedObject = targetMesh;
-            
             const targetPosition = new THREE.Vector3();
             targetMesh.getWorldPosition(targetPosition);
-
             cameraAnimationLookAt.copy(targetPosition);
-
             const planetRadius = targetMesh.geometry.boundingSphere.radius;
             const cameraOffset = planetRadius * 5;
-            
-            const offset = new THREE.Vector3(0, planetRadius * 2, cameraOffset);
-            cameraAnimationTarget.copy(targetPosition).add(offset);
-            
+            cameraAnimationTarget.copy(targetPosition).add(new THREE.Vector3(0, planetRadius * 2, cameraOffset));
             showDetailPanel(targetMesh);
-            
-            // =================================================================
-            // === THIS IS THE NEWLY ADDED LINE FOR PARENT COMMUNICATION ===
-            // =================================================================
             window.parent.postMessage({ type: 'planetFocus', data: targetMesh.userData }, '*');
         }
 
@@ -402,30 +229,24 @@
         
         function animate() {
             requestAnimationFrame(animate);
-
             if (focusedObject && !isAnimatingCamera && !isDragging && !isRightDragging) {
                 focusedObject.getWorldPosition(target);
                 camera.lookAt(target);
             }
-
             if (isAnimatingCamera) {
-                const animationSpeed = 0.04;
-                camera.position.lerp(cameraAnimationTarget, animationSpeed);
-                target.lerp(cameraAnimationLookAt, animationSpeed);
+                camera.position.lerp(cameraAnimationTarget, 0.04);
+                target.lerp(cameraAnimationLookAt, 0.04);
                 camera.lookAt(target);
-
                 if (camera.position.distanceTo(cameraAnimationTarget) < 0.1) {
                     isAnimatingCamera = false;
                     camera.position.copy(cameraAnimationTarget);
                     target.copy(cameraAnimationLookAt);
                 }
             }
-
             const time = Date.now() * 0.001;
             planetObjects.forEach(obj => {
                 const speed = 0.2 / obj.orbitalPeriod;
-                obj.planetMesh.position.x = Math.cos(time * speed) * obj.orbitRadius;
-                obj.planetMesh.position.z = Math.sin(time * speed) * obj.orbitRadius;
+                obj.planetMesh.position.set(Math.cos(time * speed) * obj.orbitRadius, 0, Math.sin(time * speed) * obj.orbitRadius);
                 obj.planetMesh.rotation.y += 0.005;
             });
             if (star) star.rotation.y += 0.0001;
@@ -455,10 +276,8 @@
             detailPlanet.position.set(0, 0, 0);
             const atmosphere = detailPlanet.children.find(c => c.type === "Sprite");
             if (atmosphere) detailPlanet.remove(atmosphere);
-            const geometrySize = new THREE.Box3().setFromObject(detailPlanet).getSize(new THREE.Vector3());
-            const maxDim = Math.max(geometrySize.x, geometrySize.y, geometrySize.z);
-            const scale = 1.5 / maxDim;
-            detailPlanet.scale.set(scale, scale, scale);
+            const maxDim = new THREE.Box3().setFromObject(detailPlanet).getSize(new THREE.Vector3()).length();
+            detailPlanet.scale.multiplyScalar(1.5 / maxDim);
             detailScene.add(detailPlanet);
             detailPanel.style.display = 'block';
             if(detailAnimationId) cancelAnimationFrame(detailAnimationId);
@@ -473,58 +292,29 @@
             detailPlanet = null;
         }
         
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function onMouseDown(e) {
-            e.preventDefault();
-            isAnimatingCamera = false;
-            mouseDownPos.set(e.clientX, e.clientY);
-            if (e.button === 0) { isDragging = true; } 
-            else if (e.button === 2) { isRightDragging = true; }
-            previousMousePosition = { x: e.offsetX, y: e.offsetY };
-        }
-
-        function onMouseUp(e) {
-            const mouseUpPos = new THREE.Vector2(e.clientX, e.clientY);
-            if (mouseDownPos.distanceTo(mouseUpPos) < 5) {
-                if (intersectedObject) {
-                    focusOnPlanet(intersectedObject); // Use focusOnPlanet instead of just showDetailPanel
-                }
-            }
-            isDragging = false;
-            isRightDragging = false;
-        }
-
+        function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }
+        function onMouseDown(e) { e.preventDefault(); isAnimatingCamera = false; mouseDownPos.set(e.clientX, e.clientY); if (e.button === 0) isDragging = true; else if (e.button === 2) isRightDragging = true; previousMousePosition = { x: e.offsetX, y: e.offsetY }; }
+        function onMouseUp(e) { if (mouseDownPos.distanceTo(new THREE.Vector2(e.clientX, e.clientY)) < 5 && intersectedObject) { focusOnPlanet(intersectedObject); } isDragging = false; isRightDragging = false; }
         function onMouseMove(e) {
             const currentMousePosition = { x: e.offsetX, y: e.offsetY };
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
             const deltaMove = { x: currentMousePosition.x - previousMousePosition.x, y: currentMousePosition.y - previousMousePosition.y };
             if (isDragging) {
-                if(focusedObject) {
-                    focusedObject.getWorldPosition(target);
-                }
-                const rotateSpeed = 0.005;
+                if(focusedObject) focusedObject.getWorldPosition(target);
                 const offset = camera.position.clone().sub(target);
-                offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -deltaMove.x * rotateSpeed);
+                offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -deltaMove.x * 0.005);
                 const pitchAxis = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
-                const currentPitch = Math.asin(offset.clone().normalize().y);
-                const maxPitch = Math.PI / 2 * 0.95;
-                const pitchAngle = -deltaMove.y * rotateSpeed;
-                if (Math.abs(currentPitch + pitchAngle) < maxPitch) {
+                const pitchAngle = -deltaMove.y * 0.005;
+                if (Math.abs(Math.asin(offset.clone().normalize().y) + pitchAngle) < Math.PI / 2 * 0.95) {
                     offset.applyAxisAngle(pitchAxis, pitchAngle);
                 }
                 camera.position.copy(target).add(offset);
             }
             if (isRightDragging) {
-                const panSpeed = 0.5;
                 const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
                 const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
-                const moveVector = right.multiplyScalar(-deltaMove.x * panSpeed).add(up.multiplyScalar(deltaMove.y * panSpeed));
+                const moveVector = right.multiplyScalar(-deltaMove.x * 0.5).add(up.multiplyScalar(deltaMove.y * 0.5));
                 camera.position.add(moveVector);
                 target.add(moveVector);
             }
@@ -533,20 +323,7 @@
             tooltip.style.left = `${e.clientX + 15}px`;
             tooltip.style.top = `${e.clientY + 15}px`;
         }
-        
-        function onMouseWheel(e) {
-            e.preventDefault();
-            const zoomSpeed = 0.001;
-            const offset = camera.position.clone().sub(target);
-            const newRadius = offset.length() * (1 - e.deltaY * zoomSpeed);
-            const minZoom = 50;
-            const maxZoom = 4000;
-            if (newRadius > minZoom && newRadius < maxZoom) {
-                offset.setLength(newRadius);
-                camera.position.copy(target).add(offset);
-            }
-        }
-
+        function onMouseWheel(e) { e.preventDefault(); const offset = camera.position.clone().sub(target); const newRadius = offset.length() * (1 - e.deltaY * 0.001); if (newRadius > 50 && newRadius < 4000) { offset.setLength(newRadius); camera.position.copy(target).add(offset); } }
         function updateRaycaster() {
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(planetObjects.map(p => p.planetMesh));
@@ -554,53 +331,81 @@
                 if (intersectedObject !== intersects[0].object) {
                     intersectedObject = intersects[0].object;
                     document.body.style.cursor = 'pointer';
-                    const data = intersectedObject.userData;
                     tooltip.style.display = 'block';
-                    tooltip.innerHTML = `<strong>${data.kepler_name || 'Unnamed Planet'}</strong>`;
+                    tooltip.innerHTML = `<strong>${intersectedObject.userData.kepler_name || 'Unnamed Planet'}</strong>`;
                 }
             } else {
-                if (intersectedObject) {
-                    tooltip.style.display = 'none';
-                    document.body.style.cursor = 'default';
-                }
+                if (intersectedObject) { tooltip.style.display = 'none'; document.body.style.cursor = 'default'; }
                 intersectedObject = null;
             }
         }
-
         init();
         
         // =================================================================
-        // === THIS IS THE NEW, EXPANDED DATASET FOR THE PLANET PRESETS ===
+        // === EXPANDED DATASET WITH ALL ENGINEERED FEATURES REQUIRED BY THE MODEL ===
         // =================================================================
         const multiPlanetData = [
-            // This is not a real planet, just data for the star itself.
-            { kepler_name: 'Kepler-11 Star', koi_period: 0, koi_prad: 0, koi_srad: 1.0, koi_steff: 5680, koi_teq: null },
+            // Star Data (not a planet)
+            { kepler_name: 'Star', koi_period: 0, koi_prad: 0, koi_srad: 1.0, koi_teq: null },
             
-            // A "Confirmed" Planet Preset
+            // 1. Confirmed Planet Preset (based on Kepler-452b)
             { 
-                kepler_name: 'Kepler-452b (Preset)', 
-                koi_period: 384.8, koi_duration: 10.5, koi_depth: 250, koi_prad: 1.6, koi_srad: 1.1, koi_slogg: 4.3, koi_teq: 265,
-                koi_score: 0.998, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_time0bk: 135.5, koi_impact: 0.7,
-                koi_tce_plnt_num: 1, koi_steff: 5757, koi_kepmag: 13.4, koi_model_snr: 15.2, koi_insol: 1.1,
-                koi_period_err1: 0.0001, koi_duration_err1: 0.1, koi_prad_err1: 0.2, koi_steff_err1: 80
+                kepler_name: 'Kepler-452b (Confirmed)', koi_period: 384.8, koi_duration: 10.5, koi_depth: 250, koi_prad: 1.6, koi_srad: 1.1, koi_slogg: 4.3, koi_teq: 265, koi_insol: 1.1,
+                koi_score: 0.99, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_tce_plnt_num: 1, koi_steff: 5757, koi_model_snr: 15.2,
+                rho_star: 1400.0, rho_circ: 1350.0, density_discrepancy_ratio: 1.03, log_koi_period: 5.95, log_koi_duration: 2.44, log_koi_depth: 5.52, log_koi_prad: 0.99, log_koi_insol: 0.74, log_koi_model_snr: 2.78,
+                koi_period_err_ratio: 0.000002, koi_duration_err_ratio: 0.009, koi_prad_err_ratio: 0.12, koi_steff_err_ratio: 0.013,
+                v_shape_metric: 23.8, planet_star_radius_ratio: 1.45, depth_x_fpflag_co: 0, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 15.0, 'koi_score koi_depth': 247.5, 'koi_model_snr koi_depth': 3800.0
             },
             
-            // A "Candidate" Planet Preset
+            // 2. Candidate Planet Preset (based on KOI-7923.01)
             { 
-                kepler_name: 'KOI-7923.01 (Preset)', 
-                koi_period: 516.4, koi_duration: 12.2, koi_depth: 190, koi_prad: 0.99, koi_srad: 0.95, koi_slogg: 4.45, koi_teq: 230,
-                koi_score: 0.95, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_time0bk: 151.7, koi_impact: 0.5,
-                koi_tce_plnt_num: 1, koi_steff: 5627, koi_kepmag: 14.2, koi_model_snr: 11.5, koi_insol: 0.95,
-                koi_period_err1: 0.0003, koi_duration_err1: 0.2, koi_prad_err1: 0.15, koi_steff_err1: 90
+                kepler_name: 'KOI-7923.01 (Candidate)', koi_period: 516.4, koi_duration: 12.2, koi_depth: 190, koi_prad: 0.99, koi_srad: 0.95, koi_slogg: 4.45, koi_teq: 230, koi_insol: 0.95,
+                koi_score: 0.95, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_tce_plnt_num: 1, koi_steff: 5627, koi_model_snr: 11.5,
+                rho_star: 1900.0, rho_circ: 1800.0, density_discrepancy_ratio: 1.05, log_koi_period: 6.24, log_koi_duration: 2.58, log_koi_depth: 5.25, log_koi_prad: 0.68, log_koi_insol: -0.05, log_koi_model_snr: 2.52,
+                koi_period_err_ratio: 0.000006, koi_duration_err_ratio: 0.016, koi_prad_err_ratio: 0.15, koi_steff_err_ratio: 0.016,
+                v_shape_metric: 15.5, planet_star_radius_ratio: 1.04, depth_x_fpflag_co: 0, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 10.9, 'koi_score koi_depth': 180.5, 'koi_model_snr koi_depth': 2185.0
             },
 
-            // A "False Positive" Planet Preset
+            // 3. False Positive Preset (based on KOI-13.01)
             { 
-                kepler_name: 'KOI-13.01 (Preset)', 
-                koi_period: 2.5, koi_duration: 1.8, koi_depth: 35000, koi_prad: 25.4, koi_srad: 1.7, koi_slogg: 4.1, koi_teq: 1800,
-                koi_score: 0.12, koi_fpflag_nt: 0, koi_fpflag_ss: 1, koi_fpflag_co: 1, koi_fpflag_ec: 1, koi_time0bk: 131.6, koi_impact: 1.2,
-                koi_tce_plnt_num: 1, koi_steff: 6500, koi_kepmag: 10.1, koi_model_snr: 950.3, koi_insol: 2400,
-                koi_period_err1: 0.00001, koi_duration_err1: 0.05, koi_prad_err1: 2.0, koi_steff_err1: 150
+                kepler_name: 'KOI-13.01 (False Positive)', koi_period: 2.5, koi_duration: 1.8, koi_depth: 35000, koi_prad: 25.4, koi_srad: 1.7, koi_slogg: 4.1, koi_teq: 1800, koi_insol: 2400,
+                koi_score: 0.12, koi_fpflag_nt: 0, koi_fpflag_ss: 1, koi_fpflag_co: 1, koi_fpflag_ec: 1, koi_tce_plnt_num: 1, koi_steff: 6500, koi_model_snr: 950.3,
+                rho_star: 700.0, rho_circ: 25000.0, density_discrepancy_ratio: 0.028, log_koi_period: 1.25, log_koi_duration: 1.03, log_koi_depth: 10.46, log_koi_prad: 3.27, log_koi_insol: 7.78, log_koi_model_snr: 6.85,
+                koi_period_err_ratio: 0.000004, koi_duration_err_ratio: 0.027, koi_prad_err_ratio: 0.078, koi_steff_err_ratio: 0.023,
+                v_shape_metric: 19444.4, planet_star_radius_ratio: 14.9, depth_x_fpflag_co: 35000, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 114.0, 'koi_score koi_depth': 4200.0, 'koi_model_snr koi_depth': 33260500.0
+            },
+
+            // 4. New Planet: Rocky Candidate (based on Kepler-186f)
+            {
+                kepler_name: 'Kepler-186f (Candidate)', koi_period: 129.9, koi_duration: 5.5, koi_depth: 150, koi_prad: 1.1, koi_srad: 0.5, koi_slogg: 4.7, koi_teq: 188, koi_insol: 0.32,
+                koi_score: 0.91, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_tce_plnt_num: 5, koi_steff: 3755, koi_model_snr: 9.8,
+                rho_star: 4500.0, rho_circ: 4300.0, density_discrepancy_ratio: 1.04, log_koi_period: 4.87, log_koi_duration: 1.87, log_koi_depth: 5.01, log_koi_prad: 0.74, log_koi_insol: -1.13, log_koi_model_snr: 2.38,
+                koi_period_err_ratio: 0.00001, koi_duration_err_ratio: 0.02, koi_prad_err_ratio: 0.1, koi_steff_err_ratio: 0.02,
+                v_shape_metric: 27.2, planet_star_radius_ratio: 2.2, depth_x_fpflag_co: 0, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 8.9, 'koi_score koi_depth': 136.5, 'koi_model_snr koi_depth': 1470.0
+            },
+            
+            // 5. New Planet: Temperate Candidate (based on TRAPPIST-1e)
+            {
+                kepler_name: 'TRAPPIST-1e (Candidate)', koi_period: 6.1, koi_duration: 1.2, koi_depth: 700, koi_prad: 0.91, koi_srad: 0.12, koi_slogg: 5.2, koi_teq: 251, koi_insol: 0.66,
+                koi_score: 0.98, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_tce_plnt_num: 4, koi_steff: 2566, koi_model_snr: 35.5,
+                rho_star: 14000.0, rho_circ: 13500.0, density_discrepancy_ratio: 1.03, log_koi_period: 1.96, log_koi_duration: 0.78, log_koi_depth: 6.55, log_koi_prad: 0.64, log_koi_insol: -0.41, log_koi_model_snr: 3.6,
+                koi_period_err_ratio: 0.000003, koi_duration_err_ratio: 0.015, koi_prad_err_ratio: 0.08, koi_steff_err_ratio: 0.025,
+                v_shape_metric: 583.3, planet_star_radius_ratio: 7.58, depth_x_fpflag_co: 0, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 34.8, 'koi_score koi_depth': 686.0, 'koi_model_snr koi_depth': 24850.0
+            },
+
+            // 6. New Planet: Gas Giant Candidate (based on Kepler-90g)
+            {
+                kepler_name: 'Kepler-90g (Candidate)', koi_period: 210.6, koi_duration: 11.5, koi_depth: 7200, koi_prad: 8.1, koi_srad: 1.2, koi_slogg: 4.2, koi_teq: 420, koi_insol: 22.7,
+                koi_score: 0.85, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_tce_plnt_num: 6, koi_steff: 6080, koi_model_snr: 150.1,
+                rho_star: 1100.0, rho_circ: 1050.0, density_discrepancy_ratio: 1.04, log_koi_period: 5.35, log_koi_duration: 2.52, log_koi_depth: 8.88, log_koi_prad: 2.2, log_koi_insol: 3.12, log_koi_model_snr: 5.01,
+                koi_period_err_ratio: 0.000002, koi_duration_err_ratio: 0.008, koi_prad_err_ratio: 0.1, koi_steff_err_ratio: 0.015,
+                v_shape_metric: 626.0, planet_star_radius_ratio: 6.75, depth_x_fpflag_co: 0, snr_x_fpflag_nt: 0,
+                'koi_score koi_model_snr': 127.5, 'koi_score koi_depth': 6120.0, 'koi_model_snr koi_depth': 1080720.0
             }
         ];
         
