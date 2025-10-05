@@ -84,6 +84,14 @@ def main():
     cm_path = os.path.join(ARTIFACT_DIR, 'confusion_matrix_stacked_koi.png')
     plt.savefig(cm_path, bbox_inches='tight'); plt.close()
     print(f"Confusion matrix plot saved to: {cm_path}")
+
+    # Get the report as a dictionary for saving to JSON
+    report_dict = classification_report(y_test, final_preds, target_names=DESCRIPTIVE_CLASS_NAMES, output_dict=True)
+    import json
+    report_path = os.path.join(ARTIFACT_DIR, 'final_model_report.json')
+    with open(report_path, 'w') as f:
+        json.dump(report_dict, f, indent=4)
+    print(f"Classification report saved to: {report_path}")
     
     # --- 5. Save the Full Stack ---
     final_stack = {'base_models': committee_of_experts, 'meta_model': best_meta_model}

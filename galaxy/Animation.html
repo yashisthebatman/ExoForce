@@ -385,6 +385,11 @@
             cameraAnimationTarget.copy(targetPosition).add(offset);
             
             showDetailPanel(targetMesh);
+            
+            // =================================================================
+            // === THIS IS THE NEWLY ADDED LINE FOR PARENT COMMUNICATION ===
+            // =================================================================
+            window.parent.postMessage({ type: 'planetFocus', data: targetMesh.userData }, '*');
         }
 
         function resetCameraView() {
@@ -500,7 +505,6 @@
             mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
             const deltaMove = { x: currentMousePosition.x - previousMousePosition.x, y: currentMousePosition.y - previousMousePosition.y };
             if (isDragging) {
-                // If we are focused on an object, update the target to its current position before calculating orbit
                 if(focusedObject) {
                     focusedObject.getWorldPosition(target);
                 }
@@ -565,14 +569,39 @@
 
         init();
         
+        // =================================================================
+        // === THIS IS THE NEW, EXPANDED DATASET FOR THE PLANET PRESETS ===
+        // =================================================================
         const multiPlanetData = [
+            // This is not a real planet, just data for the star itself.
             { kepler_name: 'Kepler-11 Star', koi_period: 0, koi_prad: 0, koi_srad: 1.0, koi_steff: 5680, koi_teq: null },
-            { kepler_name: 'HD 189733 b', koi_period: 2.2, koi_prad: 13.4, koi_srad: 0.8, koi_steff: 5040, koi_teq: 1200 }, // Hot
-            { kepler_name: 'Kepler-11 b', koi_period: 10.3, koi_prad: 1.8, koi_srad: 1.0, koi_steff: 5680, koi_teq: 900 },  // Warm
-            { kepler_name: 'Kepler-11 c', koi_period: 13.0, koi_prad: 2.9, koi_srad: 1.0, koi_steff: 5680, koi_teq: 833 },  // Warm
-            { kepler_name: 'Kepler-452b', koi_period: 384.8, koi_prad: 1.6, koi_srad: 1.1, koi_steff: 5757, koi_teq: 265 },  // Temperate
-            { kepler_name: 'TRAPPIST-1 e', koi_period: 6.1, koi_prad: 0.92, koi_srad: 0.12, koi_steff: 2511, koi_teq: 251 }, // Temperate
-            { kepler_name: 'OGLE-2005-BLG-390L b', koi_period: 3500, koi_prad: 5.5, koi_srad: 0.7, koi_steff: 3800, koi_teq: 50 },    // Cold
+            
+            // A "Confirmed" Planet Preset
+            { 
+                kepler_name: 'Kepler-452b (Preset)', 
+                koi_period: 384.8, koi_duration: 10.5, koi_depth: 250, koi_prad: 1.6, koi_srad: 1.1, koi_slogg: 4.3, koi_teq: 265,
+                koi_score: 0.998, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_time0bk: 135.5, koi_impact: 0.7,
+                koi_tce_plnt_num: 1, koi_steff: 5757, koi_kepmag: 13.4, koi_model_snr: 15.2, koi_insol: 1.1,
+                koi_period_err1: 0.0001, koi_duration_err1: 0.1, koi_prad_err1: 0.2, koi_steff_err1: 80
+            },
+            
+            // A "Candidate" Planet Preset
+            { 
+                kepler_name: 'KOI-7923.01 (Preset)', 
+                koi_period: 516.4, koi_duration: 12.2, koi_depth: 190, koi_prad: 0.99, koi_srad: 0.95, koi_slogg: 4.45, koi_teq: 230,
+                koi_score: 0.95, koi_fpflag_nt: 0, koi_fpflag_ss: 0, koi_fpflag_co: 0, koi_fpflag_ec: 0, koi_time0bk: 151.7, koi_impact: 0.5,
+                koi_tce_plnt_num: 1, koi_steff: 5627, koi_kepmag: 14.2, koi_model_snr: 11.5, koi_insol: 0.95,
+                koi_period_err1: 0.0003, koi_duration_err1: 0.2, koi_prad_err1: 0.15, koi_steff_err1: 90
+            },
+
+            // A "False Positive" Planet Preset
+            { 
+                kepler_name: 'KOI-13.01 (Preset)', 
+                koi_period: 2.5, koi_duration: 1.8, koi_depth: 35000, koi_prad: 25.4, koi_srad: 1.7, koi_slogg: 4.1, koi_teq: 1800,
+                koi_score: 0.12, koi_fpflag_nt: 0, koi_fpflag_ss: 1, koi_fpflag_co: 1, koi_fpflag_ec: 1, koi_time0bk: 131.6, koi_impact: 1.2,
+                koi_tce_plnt_num: 1, koi_steff: 6500, koi_kepmag: 10.1, koi_model_snr: 950.3, koi_insol: 2400,
+                koi_period_err1: 0.00001, koi_duration_err1: 0.05, koi_prad_err1: 2.0, koi_steff_err1: 150
+            }
         ];
         
         populateSolarSystem(multiPlanetData);
@@ -580,4 +609,3 @@
     </script>
 </body>
 </html>
-

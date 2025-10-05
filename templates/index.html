@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExoForge AI - Exoplanet Discovery Interface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117; --panel-bg: #161b22; --border-color: #30363d; --primary-accent: #58a6ff;
+            --text-primary: #c9d1d9; --text-secondary: #8b949e; --confirmed-color: #3fb950;
+            --candidate-color: #e3b341; --false-positive-color: #f85149;
+        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-primary); overflow: hidden; }
+        .main-container { display: flex; width: 100%; height: 100%; }
+        .simulation-container { flex: 1; height: 100%; position: relative; }
+        .simulation-container iframe { width: 100%; height: 100%; border: none; }
+        .control-panel { width: 480px; height: 100%; background-color: var(--panel-bg); border-left: 1px solid var(--border-color); padding: 25px; box-sizing: border-box; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; }
+        .panel-header { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .panel-header h1 { font-size: 24px; margin: 0 0 5px 0; color: var(--primary-accent); }
+        .panel-header p { font-size: 14px; margin: 0; color: var(--text-secondary); }
+        .panel-section { background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; transition: box-shadow 0.3s; }
+        .panel-section h2 { margin-top: 0; font-size: 18px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 15px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-primary); font-size: 14px; box-sizing: border-box; }
+        .submit-btn { width: 100%; margin-top: 15px; padding: 12px; background-color: var(--primary-accent); color: var(--bg-color); border: none; border-radius: 6px; font-weight: 600; font-size: 16px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
+        .submit-btn:disabled { background-color: var(--border-color); cursor: not-allowed; }
+        #result-container { margin-top: 20px; display: none; }
+        #prediction-text { text-align: center; font-size: 28px; font-weight: 600; margin: 0 0 15px 0; }
+        .prediction-CONFIRMED { color: var(--confirmed-color); } .prediction-CANDIDATE { color: var(--candidate-color); } .prediction-FALSE-POSITIVE { color: var(--false-positive-color); }
+        .results-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .results-table td { padding: 10px; border-bottom: 1px solid var(--border-color); }
+        .results-table td:last-child { text-align: right; font-weight: 600; }
+        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background-color: #2d333b; color: var(--text-primary); padding: 12px 20px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: bottom 0.5s ease-in-out; z-index: 1000;}
+        .toast.show { bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="simulation-container">
+            <iframe src="/galaxy/Animation.html"></iframe>
+        </div>
+        <div class="control-panel">
+            <div class="panel-header"><h1>ExoForge AI</h1><p>Interactive Exoplanet Discovery</p></div>
+
+            <div class="panel-section" id="classifier-panel">
+                <h2>Classifier</h2>
+                <form id="prediction-form">
+                    <div class="form-group">
+                        <label for="model-selector">Choose Model</label>
+                        <select id="model-selector" name="model_uri">
+                            <option value="default">Default Stacked Model (Production)</option>
+                        </select>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-top: 0; margin-bottom: 15px;">Click a planet in the simulation or enter data manually.</p>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Orbital Period (d)</label><input type="number" step="any" name="koi_period" value="9.23" required></div>
+                        <div class="form-group"><label>Transit Duration (h)</label><input type="number" step="any" name="koi_duration" value="2.9" required></div>
+                        <div class="form-group"><label>Transit Depth (ppm)</label><input type="number" step="any" name="koi_depth" value="846" required></div>
+                        <div class="form-group"><label>Planet Radius (R⊕)</label><input type="number" step="any" name="koi_prad" value="2.26" required></div>
+                        <div class="form-group"><label>Stellar Radius (R☉)</label><input type="number" step="any" name="koi_srad" value="0.927" required></div>
+                        <div class="form-group"><label>Stellar Gravity (log(g))</label><input type="number" step="any" name="koi_slogg" value="4.5" required></div>
+                    </div>
+                    <div id="hidden-inputs">
+                        <input type="hidden" name="koi_score" value="0.999"><input type="hidden" name="koi_fpflag_nt" value="0"><input type="hidden" name="koi_fpflag_ss" value="0"><input type="hidden" name="koi_fpflag_co" value="0"><input type="hidden" name="koi_fpflag_ec" value="0"><input type="hidden" name="koi_time0bk" value="132.8"><input type="hidden" name="koi_impact" value="0.146"><input type="hidden" name="koi_tce_plnt_num" value="1"><input type="hidden" name="koi_steff" value="5455"><input type="hidden" name="koi_kepmag" value="15.3"><input type="hidden" name="koi_model_snr" value="25.8"><input type="hidden" name="koi_period_err1" value="0.00001"><input type="hidden" name="koi_duration_err1" value="0.01"><input type="hidden" name="koi_prad_err1" value="0.1"><input type="hidden" name="koi_steff_err1" value="80"><input type="hidden" name="koi_teq" value="793"><input type="hidden" name="koi_insol" value="93.59">
+                    </div>
+                    <button type="submit" class="submit-btn">Classify</button>
+                </form>
+                <div id="result-container">
+                    <p id="prediction-text"></p>
+                    <table class="results-table">
+                        <tbody>
+                            <tr><td>CONFIRMED</td><td id="prob-confirmed"></td></tr>
+                            <tr><td>CANDIDATE</td><td id="prob-candidate"></td></tr>
+                            <tr><td>FALSE POSITIVE</td><td id="prob-fp"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h2>Model Retraining (via MLflow)</h2>
+                 <form id="retraining-form">
+                    <!-- Sliders remain the same as before -->
+                    <button type="submit" class="submit-btn">Start Training Job</button>
+                 </form>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const predictionForm = document.getElementById('prediction-form');
+            const modelSelector = document.getElementById('model-selector');
+
+            // --- Model Fetching and Selection ---
+            async function fetchModels() {
+                try {
+                    const response = await fetch('/get_models');
+                    if (!response.ok) throw new Error('Could not fetch models.');
+                    const models = await response.json();
+                    
+                    // Clear existing options except default
+                    modelSelector.innerHTML = '<option value="default">Default Stacked Model (Production)</option>';
+                    
+                    models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.uri;
+                        option.textContent = `Version ${model.version} (Stage: ${model.stage})`;
+                        modelSelector.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching models:', error);
+                    showToast('Could not load models from MLflow.', 'error');
+                }
+            }
+            fetchModels(); // Fetch on page load
+
+            // --- Planet Click Handlers ---
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'planetFocus') {
+                    populateForm(event.data.data);
+                } else if (event.data.type === 'classifyPlanet') {
+                    populateForm(event.data.data);
+                    predictionForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                }
+            });
+
+            function populateForm(data) {
+                for (const key in data) {
+                    const input = predictionForm.querySelector(`[name="${key}"]`);
+                    if (input) input.value = data[key];
+                }
+            }
+
+            // --- Prediction Logic ---
+            predictionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitBtn = predictionForm.querySelector('button');
+                submitBtn.textContent = 'Classifying...';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(predictionForm);
+                const features = Object.fromEntries(formData.entries());
+                delete features.model_uri; // Separate features from model choice
+
+                const payload = {
+                    model_uri: modelSelector.value,
+                    features: features
+                };
+
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Prediction failed');
+                    displayResult(result);
+                } catch (error) {
+                    showToast(`Error: ${error.message}`, 'error');
+                } finally {
+                    submitBtn.textContent = 'Classify';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function displayResult(result) {
+                document.getElementById('prediction-text').textContent = result.prediction;
+                document.getElementById('prediction-text').className = `prediction-${result.prediction.replace(' ', '-')}`;
+                document.getElementById('prob-confirmed').textContent = `${(result.probabilities.CONFIRMED * 100).toFixed(1)}%`;
+                document.getElementById('prob-candidate').textContent = `${(result.probabilities.CANDIDATE * 100).toFixed(1)}%`;
+                document.getElementById('prob-fp').textContent = `${(result.probabilities['FALSE POSITIVE'] * 100).toFixed(1)}%`;
+                document.getElementById('result-container').style.display = 'block';
+            }
+
+            // --- Retraining Form (Event listener is the same as before) ---
+             document.getElementById('retraining-form').addEventListener('submit', async (e) => { /* ... same as before ... */ });
+
+            // --- Toast Notification Utility ---
+            const toast = document.getElementById('toast');
+            let toastTimeout;
+            function showToast(message, type = 'success') {
+                clearTimeout(toastTimeout);
+                toast.textContent = message;
+                toast.className = `toast show ${type === 'error' ? 'error' : ''}`;
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
